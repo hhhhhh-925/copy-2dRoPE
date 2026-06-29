@@ -1,6 +1,6 @@
 # 2D-RoPE
 
-This is the official source code for the paper <Upcoming paper URL>.
+This is the official source code for the paper [Upcoming paper URL](https://arxiv.org/abs/xxxx.xxxxx).
 
 The code is separated into multiple folders:
 

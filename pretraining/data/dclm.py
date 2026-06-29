@@ -17,7 +17,7 @@ def _dclm_jsonl_shard_paths(data_dir: Union[str, Path]) -> List[Path]:
 
 def build_dataset(
     tokenizer: PreTrainedTokenizerBase,
-    data_dir: Union[str, Path] = "/home/test/test07/data/dclm-baseline-1.0",
+    data_dir: Union[str, Path] = "/path/to/datasets/dclm-baseline-1.0",
     streaming: bool = True,
     reverse_shard_order: bool = False,
     n_workers: int = 8,

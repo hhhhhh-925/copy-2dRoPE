@@ -10,7 +10,7 @@ from transformers import PreTrainedTokenizerBase
 
 def build_dataset(
     tokenizer: PreTrainedTokenizerBase,
-    data_dir: Union[str, Path] = "/home/test/test07/data/fineweb-edu/sample/100BT",
+    data_dir: Union[str, Path] = "/path/to/datasets/fineweb-edu-100bt",
     streaming: bool = True,
     n_workers: int = 8,
     overwrite_cache: bool = False,
