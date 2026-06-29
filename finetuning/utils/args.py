@@ -3,7 +3,7 @@ from tap import Tap
 
 class Args(Tap):
     data_name: str = "sft-dataset"
-    data_path: str = "/path/to/datasets/tulu-3-sft-mixture"
+    data_path: str = "/path/to/datasets/binary-copy/train.jsonl"
     pretrained_path: str = "/path/to/checkpoints/gpt-730m-rope-dclm-15b/ckpt_30000"
     output_dir: str = "results-2026-2"
     # batch_size: int = 32

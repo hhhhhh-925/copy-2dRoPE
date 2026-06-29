@@ -1,7 +1,6 @@
-from datasets import load_dataset, Dataset, concatenate_datasets
+from datasets import Dataset
 from transformers import AutoTokenizer
 import json
-import sys
 from ..args import Args
 
 
@@ -9,21 +8,20 @@ def load_jsonl(file_path: str) -> list:
     return [json.loads(line) for line in open(file_path)]
 
 
-def _has_explicit_data_path_arg() -> bool:
-    return any(arg == "--data_path" or arg.startswith("--data_path=") for arg in sys.argv[1:])
-
-
 def build_dataset(
     args: Args,
     tokenizer: AutoTokenizer,
 ) -> tuple[Dataset, Dataset]:
     """
-    Build train and eval datasets for Tulu v3 SFT training.
-    Tulu v3 uses a conversational format with 'messages' containing roles.
+    Build train and eval datasets for Binary Copy SFT training.
+
+    Expected dataset format: JSONL where each row contains a `messages` field,
+    and each message has `role` and `content`.
     """
-    data_path = 'data/tulu-3-sft-mixture'
-    print("Loading dataset from {data_path}")
-    tulu_dataset = load_dataset(data_path)['train']
+    binary_copy_data_path = args.data_path
+    print(f"Loading Binary Copy dataset from {binary_copy_data_path}")
+    dataset = Dataset.from_list(load_jsonl(binary_copy_data_path))
+    dataset = dataset.shuffle(seed=0)
 
     def format_message(role: str, content: str) -> str:
         """Format a single message with role tags."""
@@ -31,7 +29,7 @@ def build_dataset(
     
     def preprocess(example: dict) -> dict[str, list[int]]:
         """
-        Preprocess a single example from Tulu v3 dataset.
+        Preprocess a single example from the Binary Copy SFT dataset.
         
         Args:
             example: A dict containing 'messages' key with list of message dicts.
@@ -105,20 +103,8 @@ def build_dataset(
             "attention_mask": attention_mask,
         }
 
-    copy_data_path = (
-        args.data_path
-        if _has_explicit_data_path_arg()
-        else 'data/copy-sft/train_10_1000_unbal.jsonl'
-    )
-    copy_dataset = Dataset.from_list(load_jsonl(copy_data_path))
-    copy_dataset = copy_dataset.shuffle(seed=0)
-    # 5% of the dataset is copy data
     n_examples = args.n_train_examples + args.n_eval_examples
-    copy_dataset = copy_dataset.take(int(n_examples * args.copy_prop))
-
-    tulu_dataset = tulu_dataset.shuffle(seed=0)
-    tulu_dataset = tulu_dataset.take(int(n_examples * (1 - args.copy_prop)))
-    dataset = concatenate_datasets([tulu_dataset, copy_dataset])
+    dataset = dataset.take(min(n_examples, len(dataset)))
 
     # Split into train and validation sets
     dataset = dataset.train_test_split(

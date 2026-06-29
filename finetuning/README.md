@@ -40,7 +40,7 @@ bash train.sh \
   output_dir=results \
   run_name=my-sft-run \
   data_name=sft-dataset \
-  data_path=/path/to/copy_sft.jsonl
+  data_path=/path/to/datasets/binary-copy/train.jsonl
 ```
 
 Notes:
@@ -58,7 +58,7 @@ Main arguments from `utils/args.py`:
 
 - `pretrained_path`: checkpoint path to finetune from.
 - `data_name`: currently only `sft-dataset` is supported.
-- `data_path`: path to copy-SFT JSONL (see dataset notes below).
+- `data_path`: path to your Binary Copy SFT JSONL file (see dataset notes below).
 - `output_dir`: base output directory.
 - `run_name`: experiment name.
 - `batch_size`: **per-device** train/eval batch size.
@@ -69,7 +69,6 @@ Main arguments from `utils/args.py`:
 - `max_len`: sequence length after truncation/padding.
 - `eval_interval`: eval/save steps interval.
 - `n_train_examples`, `n_eval_examples`: capped train/eval sizes.
-- `copy_prop`: proportion of copy-data in the mixed dataset.
 - `bf16`: enable bf16 training.
 - `gradient_checkpointing`: enable model gradient checkpointing.
 - `liger_fused_ce`: enable Liger fused CE path for supported models.
@@ -97,17 +96,19 @@ Main arguments from `utils/args.py`:
 
 Current dataset pipeline in `utils/data/sft_dataset.py`:
 
-- Loads Tulu mixture from `data/tulu-3-sft-mixture` (hardcoded in current implementation).
-- Loads copy-SFT JSONL from:
-  - `data_path` if explicitly passed on CLI, otherwise
-  - `data/copy-sft/train_10_1000_unbal.jsonl`
-- Mixes Tulu + copy data with ratio controlled by `copy_prop`.
+- Loads Binary Copy SFT JSONL from `data_path`.
 - Preprocesses chat messages into causal-LM inputs:
   - user/system tokens masked with `-100`
   - assistant tokens contribute to loss
   - BOS/EOS handling, truncation to `max_len`, right padding
 
-Because of this implementation, make sure the expected local dataset files are present (or pass `data_path` explicitly for copy data).
+Before running finetuning, generate or download the Binary Copy dataset (for example from HuggingFace), save it locally, and pass its path through the command line argument:
+
+```bash
+data_path=/path/to/datasets/binary-copy/train.jsonl
+```
+
+The code uses a dummy default path in `utils/args.py`, so you should always provide `data_path=...` explicitly in real runs.
 
 ## 8) Example commands
 
@@ -119,6 +120,7 @@ bash train.sh \
   pretrained_path=/path/to/hf-checkpoint \
   output_dir=results \
   run_name=single-gpu-test \
+  data_path=/path/to/datasets/binary-copy/train.jsonl \
   report_to=tensorboard \
   bf16=True
 ```
@@ -131,6 +133,7 @@ bash train.sh \
   pretrained_path=/path/to/hf-checkpoint \
   output_dir=results \
   run_name=single-gpu-run \
+  data_path=/path/to/datasets/binary-copy/train.jsonl \
   batch_size=16 \
   gradient_accumulation_steps=1 \
   eval_interval=100 \
@@ -145,6 +148,7 @@ bash train.sh \
   num_gpus=1 \
   pretrained_path=/path/to/hf-checkpoint \
   run_name=swanlab-run \
+  data_path=/path/to/datasets/binary-copy/train.jsonl \
   report_to=swanlab
 ```
 
