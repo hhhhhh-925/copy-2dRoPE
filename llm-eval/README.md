@@ -19,8 +19,8 @@ README.md                       # this usage guide
 
 The script follows the same evaluation logic as the benchmark eval code:
 
-- `01-copy`: strict string match.
-- `ab-copy`: extract only `a/A/b/B` from the model output, map `a/A -> a` and `b/B -> b`, then compare with the target.
+- `binary-copy-recursive-flip`: strict string match.
+- `binary-copy-imbalanced`: extract only `a/A/b/B` from the model output, map `a/A -> a` and `b/B -> b`, then compare with the target.
 - `python-list-conversion`: extract all numbers from the model output and the gold answer, then compare the full extracted number sequence.
 
 API errors after all retry attempts are counted as incorrect.
@@ -30,11 +30,6 @@ API errors after all retry attempts are counted as incorrect.
 ```bash
 pip install -U openai datasets huggingface_hub tqdm
 ```
-
-
-## Note about Hugging Face loading on Windows
-
-Some `datasets` versions on Windows may fail if a remote `hf://...` path is passed to `load_dataset`, because it can be interpreted as a local path. This script avoids that problem by first trying the standard `datasets.load_dataset(...)` call and then falling back to `huggingface_hub` file discovery plus `hf_hub_download(...)`.
 
 ## Set API key
 
@@ -54,13 +49,13 @@ You can also pass the key directly with `--api-key`, but the environment variabl
 
 ## Quick sanity check
 
-Run only the first 5 examples of `01-copy`:
+Run only the first 5 examples of `binary-copy-recursive-flip`:
 
 ```bash
 python eval_openai_copy_benchmark.py \
   --model gpt-5.5 \
   --dataset zhangyir/Copy_Benchmark \
-  --subset 01-copy \
+  --subset binary-copy-recursive-flip \
   --limit 5
 ```
 
@@ -70,7 +65,7 @@ python eval_openai_copy_benchmark.py \
 python eval_openai_copy_benchmark.py \
   --model gpt-5.5 \
   --dataset zhangyir/Copy_Benchmark \
-  --subset ab-copy \
+  --subset binary-copy-imbalanced \
   --max-output-tokens 32768 \
   --temperature 0
 ```
@@ -78,8 +73,8 @@ python eval_openai_copy_benchmark.py \
 Available subsets:
 
 ```text
-01-copy
-ab-copy
+binary-copy-recursive-flip
+binary-copy-imbalanced
 python-list-conversion
 ```
 
@@ -100,7 +95,7 @@ python eval_openai_copy_benchmark.py \
 python eval_openai_copy_benchmark.py \
   --model gpt-5.5 \
   --dataset zhangyir/Copy_Benchmark \
-  --subset ab-copy \
+  --subset binary-copy-imbalanced \
   --resume
 ```
 
@@ -110,7 +105,7 @@ Retry only examples whose latest row had an API error:
 python eval_openai_copy_benchmark.py \
   --model gpt-5.5 \
   --dataset zhangyir/Copy_Benchmark \
-  --subset ab-copy \
+  --subset binary-copy-imbalanced \
   --resume \
   --retry-errors
 ```
@@ -136,7 +131,7 @@ Example `summary.json`:
 
 ```json
 {
-  "subset": "01-copy",
+  "subset": "binary-copy-recursive-flip",
   "model": "gpt-5.5",
   "num_examples": 5,
   "num_correct": 4,

@@ -4,15 +4,15 @@
 This script calls the OpenAI Responses API and scores model outputs with the
 same rules used by the benchmark eval code:
 
-- 01-copy: strict string match after strip().
-- ab-copy: extract a/A/b/B, map a/A -> 1 and b/B -> 0, then compare.
+- binary-copy-recursive-flip: strict string match after strip().
+- binary-copy-imbalanced: extract a/A/b/B, map a/A -> 1 and b/B -> 0, then compare.
 - python-list-conversion: extract numbers and compare the full number sequence.
 
 Example:
     python eval_openai_copy_benchmark.py \
         --model gpt-5.5 \
         --dataset zhangyir/Copy_Benchmark \
-        --subset 01-copy \
+        --subset binary-copy-recursive-flip \
         --limit 5
 """
 
@@ -30,7 +30,7 @@ from openai import OpenAI
 from tqdm import tqdm
 
 BENCHMARK_DATASET = "zhangyir/Copy_Benchmark"
-SUBSETS = ["01-copy", "ab-copy", "python-list-conversion"]
+SUBSETS = ["binary-copy-recursive-flip", "binary-copy-imbalanced", "python-list-conversion"]
 
 AB_RE = re.compile(r"[abAB]")
 NUMBER_RE = re.compile(r"-?\d+")
@@ -76,7 +76,7 @@ def load_hf_subset(dataset_name: str, subset: str, split: str, revision: Optiona
     try:
         ds = load_dataset(dataset_name, subset, split=split, **load_kwargs)
     except Exception as first_error:
-        # Fallback for a repo layout like data/01-copy.jsonl.
+        # Fallback for a repo layout like data/binary-copy-recursive-flip.jsonl.
         data_file = f"hf://datasets/{dataset_name}/data/{subset}.jsonl"
         try:
             ds = load_dataset("json", data_files=data_file, split="train", **load_kwargs)
@@ -270,9 +270,9 @@ def score_python_list_conversion(prediction: str, gold: str, metadata: Dict[str,
 
 
 def score_prediction(prediction: str, gold: str, subset: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
-    if subset == "01-copy":
+    if subset == "binary-copy-recursive-flip":
         return score_01_copy(prediction, gold, metadata)
-    if subset == "ab-copy":
+    if subset == "binary-copy-imbalanced":
         return score_ab_copy(prediction, gold, metadata)
     if subset == "python-list-conversion":
         return score_python_list_conversion(prediction, gold, metadata)
@@ -570,7 +570,7 @@ def parse_args() -> argparse.Namespace:
     source_group.add_argument("--dataset", default=BENCHMARK_DATASET, help="Hugging Face dataset repo.")
     source_group.add_argument("--data-file", default=None, help="Local JSONL file for one subset.")
 
-    parser.add_argument("--subset", default="01-copy", choices=SUBSETS + ["all"], help="Subset to evaluate.")
+    parser.add_argument("--subset", default="binary-copy-recursive-flip", choices=SUBSETS + ["all"], help="Subset to evaluate.")
     parser.add_argument("--split", default="train", help="Dataset split.")
     parser.add_argument("--revision", default=None, help="Optional Hugging Face dataset revision/commit.")
 
