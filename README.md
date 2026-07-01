@@ -2,11 +2,11 @@
 
 Links:
 
-- Data: <https://huggingface.co/datasets/zhangyir/Copy>
+- Data: [https://huggingface.co/datasets/zhangyir/Copy](https://huggingface.co/datasets/zhangyir/Copy)
 - Paper: (upcoming)
 - Checkpoints: (upcoming)
 
-This is the official source code for the paper **"Frontier Language Models Struggle to Copy: Text Can Be Better Viewed In 2D"** (<https://arxiv.org/abs/xxxx.xxxxx>).
+This is the official source code for the paper **"Frontier Language Models Struggle to Copy: Text Can Be Better Viewed In 2D"** ([https://arxiv.org/abs/xxxx.xxxxx](https://arxiv.org/abs/xxxx.xxxxx)).
 
 ## Code Structure
 
@@ -19,8 +19,9 @@ The code is separated into multiple folders:
 
 ## How to Cite?
 
-```bibtex
+You can cite us with the following BibTeX.
 
+```bibtex
 @inproceedings{wen2026frontier,
     title={Frontier Language Models Struggle to Copy: Text Can Be Better Viewed in 2D},
     author={Haodong Wen and Yiran Zhang and Yingfa Chen and Kaifeng Lyu},
