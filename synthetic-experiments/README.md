@@ -74,7 +74,7 @@ n_head = 12
 head_dim = 128
 n_embd = n_head * head_dim
 block_size = 26000
-pe_type = "ada2d"
+pe_type = "2drope"
 trainable_freqs = False
 gated = True
 
@@ -92,7 +92,7 @@ train_batch_size = 64
 test_batch_size = 1
 grad_clip = 1.0
 weight_decay = 0.01
-learning_rate = 1e-5
+learning_rate = 5e-5
 min_lr = 1e-6
 max_iters = 10000
 lr_decay_iters = 10000
@@ -234,34 +234,6 @@ final_eval = False
 
 ```python
 pe_type = "rope"   # or ada2d, 2drope, nope, hrope, alibi, nrope
-```
-
-### 12-layer setting
-
-```python
-n_layer = 12
-n_head = 12
-head_dim = 128
-n_embd = n_head * head_dim
-block_size = 26000
-learning_rate = 1e-5
-min_lr = 1e-6
-max_iters = 10000
-lr_decay_iters = 10000
-```
-
-### 1-layer setting
-
-```python
-n_layer = 1
-n_head = 2
-head_dim = 512
-n_embd = n_head * head_dim
-block_size = 260000
-learning_rate = 5e-4
-min_lr = 5e-5
-max_iters = 60000
-lr_decay_iters = 60000
 ```
 
 ## Output format
