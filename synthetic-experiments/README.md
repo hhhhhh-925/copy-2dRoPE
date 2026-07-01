@@ -276,9 +276,9 @@ The final JSON file contains:
   "seed": 42,
   "intervals": [[1, 25], [26, 50], [51, 100]],
   "samples_per_interval": 10,
-  "unbalanced": [1.0, 1.0, 0.9],
+  "imbalanced": [1.0, 1.0, 0.9],
   "random": [1.0, 0.8, 0.4],
-  "vfk": [1.0, 0.7, 0.2],
+  "RepeatFlip": [1.0, 0.7, 0.2],
   "config": {}
 }
 ```

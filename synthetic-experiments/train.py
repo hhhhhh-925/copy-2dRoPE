@@ -21,7 +21,7 @@ from typing import Any
 import numpy as np
 import torch
 
-from datagenerator import RandomGenerator, UnbalancedGenerator, vfkGenerator
+from datagenerator import RandomGenerator, ImbalancedGenerator, RepeatFlipGenerator
 from model import GPT, GPTConfig
 
 # -----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ test_batch_size = 1
 train_max_length = 100
 test_max_length = 10000
 last_test_length = 10000
-train_type = "unbal"  # choices: rand, unbal, vfk
+train_type = "unbal"  # choices: rand, unbal, RepeatFlip
 probs = [0.05, 0.15, 0.3, 0.5, 0.7, 0.85, 0.95]
 pad_left = 2
 pad_right = 4
@@ -115,8 +115,8 @@ PE_NAMES = {
 }
 GENERATOR_NAMES = {
     "rand": RandomGenerator,
-    "unbal": UnbalancedGenerator,
-    "vfk": vfkGenerator,
+    "unbal": ImbalancedGenerator,
+    "RepeatFlip": RepeatFlipGenerator,
 }
 
 if pe_type not in PE_NAMES:
@@ -447,9 +447,9 @@ if final_eval:
     final_results = {}
     intervals = None
     for eval_name, generator in [
-        ("unbalanced", UnbalancedGenerator()),
+        ("imbalanced", ImbalancedGenerator()),
         ("random", RandomGenerator()),
-        ("vfk", vfkGenerator()),
+        ("RepeatFlip", RepeatFlipGenerator()),
     ]:
         acc_tensor, intervals = estimate_each_batch_accuracy(
             last_test_length,
@@ -478,14 +478,14 @@ if final_eval:
     print(f"Saved final accuracy log to {result_path}")
 
     if swanlab is not None:
-        for (start_len, end_len), a_unbal, a_rand, a_vfk in zip(
+        for (start_len, end_len), a_unbal, a_rand, a_RepeatFlip in zip(
             intervals,
-            final_results["unbalanced"],
+            final_results["imbalanced"],
             final_results["random"],
-            final_results["vfk"],
+            final_results["RepeatFlip"],
         ):
             swanlab.log({
-                "acc_vs_len/unbalanced": a_unbal,
+                "acc_vs_len/imbalanced": a_unbal,
                 "acc_vs_len/random": a_rand,
-                "acc_vs_len/vfk": a_vfk,
+                "acc_vs_len/RepeatFlip": a_RepeatFlip,
             }, step=end_len)

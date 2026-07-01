@@ -39,10 +39,10 @@ class RandomGenerator(BaseGenerator):
         seq_y = [-1] * prefix_length + raw_seq[prefix_length + 1: prefix_length + 2 + sequence_length] + [-1] * (block_size - prefix_length - sequence_length - 1)
         return seq_x, seq_y, prefix_length, sequence_length
     
-class UnbalancedGenerator(BaseGenerator):
+class ImbalancedGenerator(BaseGenerator):
     """Generate sequences with balanced "1" and :2"s."""
     def generate(self, max_length, block_size,p=0.5, noise = False, fixlength = False, flip_ratio=0.1, min=0, max=0, pad_left=2, pad_right=4):
-        # for unbalanced training with probability parameter p
+        # for imbalanced training with probability parameter p
         # forbidden = {50,51,52,53,54}
         # while True:
         #     sequence_length = random.randint(1, max_length)
@@ -69,9 +69,9 @@ class UnbalancedGenerator(BaseGenerator):
         seq_y = [-1] * prefix_length + raw_seq[prefix_length + 1: prefix_length + 2 + sequence_length] + [-1] * (block_size - prefix_length - sequence_length - 1)
         return seq_x, seq_y, prefix_length, sequence_length
     
-class vfkGenerator(BaseGenerator):
+class RepeatFlipGenerator(BaseGenerator):
     def generate(self, max_length, block_size,p=0.5, fixlength = False, noise = False, flip_ratio=0.1, min=0, max=0, pad_left=2, pad_right=4):
-        # for unbalanced training with probability parameter p
+        # for imbalanced training with probability parameter p
         uni_index = pad_left + pad_right + 1
         if fixlength:
             sequence_length = random.randint(min,max)
