@@ -284,11 +284,3 @@ The final JSON file contains:
 ```
 
 Each accuracy is exact-sequence accuracy over the labeled copied region for that length interval.
-
-## Notes for reproducibility
-
-- Set `seed` explicitly.
-- Keep `train_max_length`, `test_max_length`, `last_test_length`, `pad_left`, and `pad_right` in the config file.
-- Keep `swanlab_log = False` for artifact-only reproduction; enable it only for online tracking.
-- Use `dtype = "float32"` if you want the most conservative numerical behavior across platforms.
-- Large values such as `block_size = 260000` require substantial GPU memory.
