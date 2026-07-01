@@ -35,8 +35,8 @@ last_test_length = 10000
 
 learning_rate = 5e-5
 min_lr = 1e-6
-max_iters = 10000
-lr_decay_iters = 10000
+max_iters = 1000
+lr_decay_iters = 1000
 warmup_iters = 100
 beta2 = 0.95
 
