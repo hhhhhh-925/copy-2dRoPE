@@ -28,8 +28,13 @@ API errors after all retry attempts are counted as incorrect.
 ## Install
 
 ```bash
-pip install -U openai datasets tqdm
+pip install -U openai datasets huggingface_hub tqdm
 ```
+
+
+## Note about Hugging Face loading on Windows
+
+Some `datasets` versions on Windows may fail if a remote `hf://...` path is passed to `load_dataset`, because it can be interpreted as a local path. This script avoids that problem by first trying the standard `datasets.load_dataset(...)` call and then falling back to `huggingface_hub` file discovery plus `hf_hub_download(...)`.
 
 ## Set API key
 
