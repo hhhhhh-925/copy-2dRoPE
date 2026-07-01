@@ -19,9 +19,9 @@ README.md                       # this usage guide
 
 The script follows the same evaluation logic as the benchmark eval code:
 
-- `01-copy`: strict string match after `strip()`.
-- `ab-copy`: extract only `a/A/b/B` from the model output, map `a/A -> 1` and `b/B -> 0`, then compare with the binary target.
-- `python-list-conversion`: extract all integer numbers from the model output and the gold answer, then compare the full extracted number sequence.
+- `01-copy`: strict string match.
+- `ab-copy`: extract only `a/A/b/B` from the model output, map `a/A -> a` and `b/B -> b`, then compare with the target.
+- `python-list-conversion`: extract all numbers from the model output and the gold answer, then compare the full extracted number sequence.
 
 API errors after all retry attempts are counted as incorrect.
 
